@@ -116,7 +116,11 @@ def load(name: str, device: Union[str, torch.device] = "cuda" if torch.cuda.is_a
     preprocess : Callable[[PIL.Image], torch.Tensor]
         A torchvision transform that converts a PIL image into a tensor that the returned model can take as its input
     """
-    if name in _MODELS:
+    if os.path.exists(download_root):
+        print(f"Taking existing CLIP path: {download_root}")
+        model_path = download_root
+    elif name in _MODELS:
+        print(f"Trying to download CLIP... ({download_root})")
         model_path = _download(_MODELS[name], download_root or os.path.expanduser("~/.cache/clip"))
     elif os.path.isfile(name):
         model_path = name
